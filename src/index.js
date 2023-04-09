@@ -29,8 +29,10 @@ async function handleFormSubmit(event) {
       );
       return;
     }
+
     Notify.success(`Hooray! We found ${data.totalHits} images`);
     galleryEl.innerHTML = renderGalleryMarkup(data);
+
     simpleLightBoxGallery = new SimpleLightbox('.gallery a', {
       captions: true,
       captionSelector: 'img',
@@ -55,8 +57,10 @@ async function handleLoadMoreBtnClick() {
   try {
     const { data } = await pixabayAPI.fetchPhotos();
     galleryEl.insertAdjacentHTML('beforeend', renderGalleryMarkup(data));
+
     const lightBoxInstance = simpleLightBoxGallery.refresh();
     lightBoxInstance.refresh();
+
     if (data.hits.length <= pixabayAPI.count) {
       loadMoreBtn.classList.add('is-hidden');
       setTimeout(
@@ -102,14 +106,3 @@ function renderGalleryMarkup({ hits }) {
     })
     .join('');
 }
-
-// function addSimpleLightBoxEl() {
-//   return (gallery = new SimpleLightbox('.gallery a', {
-//     captions: true,
-//     captionSelector: 'img',
-//     captionType: 'attr',
-//     captionsData: 'alt',
-//     captionPosition: 'bottom',
-//     captionDelay: 250,
-//   }));
-// }
