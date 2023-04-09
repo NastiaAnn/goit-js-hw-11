@@ -22,6 +22,7 @@ async function handleFormSubmit(event) {
   searchInputEl.value = '';
 
   try {
+    pixabayAPI.page = 1;
     const { data } = await pixabayAPI.fetchPhotos();
     if (data.totalHits === 0) {
       loadMoreBtn.classList.add('is-hidden');
