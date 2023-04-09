@@ -24,6 +24,8 @@ async function handleFormSubmit(event) {
   try {
     const { data } = await pixabayAPI.fetchPhotos();
     if (data.totalHits === 0) {
+      loadMoreBtn.classList.add('is-hidden');
+      galleryEl.innerHTML = '';
       Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.'
       );
@@ -31,12 +33,8 @@ async function handleFormSubmit(event) {
     }
 
     Notify.success(`Hooray! We found ${data.totalHits} images`);
-    galleryEl.innerHTML = renderGalleryMarkup(data);
-    if (data.totalHits <= pixabayAPI.count || data.totalHits === 0) {
-      loadMoreBtn.classList.add('is-hidden');
-    }
-    loadMoreBtn.classList.remove('is-hidden');
 
+    galleryEl.innerHTML = renderGalleryMarkup(data);
     simpleLightBoxGallery = new SimpleLightbox('.gallery a', {
       captions: true,
       captionSelector: 'img',
@@ -45,6 +43,11 @@ async function handleFormSubmit(event) {
       captionPosition: 'bottom',
       captionDelay: 250,
     });
+
+    if (data.totalHits <= pixabayAPI.count || data.totalHits === 0) {
+      loadMoreBtn.classList.add('is-hidden');
+    }
+    loadMoreBtn.classList.remove('is-hidden');
   } catch (err) {
     console.log(err);
   }
@@ -55,10 +58,11 @@ async function handleLoadMoreBtnClick() {
   try {
     const { data } = await pixabayAPI.fetchPhotos();
 
+    galleryEl.insertAdjacentHTML('beforeend', renderGalleryMarkup(data));
     const lightBoxInstance = simpleLightBoxGallery.refresh();
     lightBoxInstance.refresh();
-    galleryEl.insertAdjacentHTML('beforeend', renderGalleryMarkup(data));
-    if (data.hits.length <= pixabayAPI.count) {
+
+    if (data.totalHits - pixabayAPI.count <= pixabayAPI.count) {
       Notify.warning(
         "We're sorry, but you've reached the end of search results."
       );
