@@ -1,0 +1,17 @@
+.search-form {
+  display: flex;
+  justify-content: center;
+  padding: 15px 0;
+  gap: 5px;
+  background-color: rgba(38, 81, 185, 0.49);
+}
+.form-input {
+  padding: 5px 20px;
+}
+.form-button {
+  border: none;
+  border-radius: 5px;
+  background-color: rgba(38, 81, 185, 0.85);
+  color: white;
+  padding: 10px;
+}
