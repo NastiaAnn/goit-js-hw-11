@@ -2,6 +2,7 @@ import { PixabayAPI } from './pixabay-api';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+import { renderGalleryMarkup } from './gallery-markup';
 
 const searchFormEl = document.querySelector('.search-form');
 const searchInputEl = document.querySelector('.form-input');
@@ -15,7 +16,9 @@ const pixabayAPI = new PixabayAPI();
 async function handleFormSubmit(event) {
   event.preventDefault();
 
-  if (searchInputEl.value === '') {
+  if (searchInputEl.value === '' || searchInputEl.value === ' ') {
+    loadMoreBtn.classList.add('is-hidden');
+    galleryEl.innerHTML = '';
     return;
   }
   pixabayAPI.query = searchInputEl.value.trim();
@@ -78,31 +81,3 @@ async function handleLoadMoreBtnClick() {
 
 loadMoreBtn.addEventListener('click', handleLoadMoreBtnClick);
 searchFormEl.addEventListener('submit', handleFormSubmit);
-
-function renderGalleryMarkup({ hits }) {
-  return hits
-    .map(hit => {
-      return `
-      <div class="photo-card">
-         <a class="gallery__item" href="${hit.largeImageURL}">
-            <img src="${hit.webformatURL}" alt="${hit.tags}" loading="lazy" height="427" />
-        </a>
-        <div class="info">
-          <p class="info-item">
-            <b>Likes </b>${hit.likes}
-          </p>
-          <p class="info-item">
-            <b>Views </b>${hit.views}
-          </p>
-          <p class="info-item">
-            <b>Comments </b>${hit.comments}
-          </p>
-          <p class="info-item">
-            <b>Downloads </b>${hit.downloads}
-          </p>
-        </div>
-      </div>
-    `;
-    })
-    .join('');
-}
